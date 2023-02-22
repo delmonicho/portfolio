@@ -8,11 +8,10 @@ const Hero = (props) => (
   <Section row nopadding>
     <LeftSection>
       <SectionTitle main center>
-        What up! <br />
-        check out nicho's portfolio
+        nicho del moral <br />
       </SectionTitle>
       <SectionText>
-        The purpose of this portfolio is to showcase nicho;s experience and 
+        The purpose of this portfolio is to showcase nicho's experience and 
         inform future collaborators and employers of nicho's skills
       </SectionText>
       <Button onClick={() => window.location="google.com"}>Learn More</Button>
