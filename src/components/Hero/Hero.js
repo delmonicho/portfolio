@@ -11,8 +11,7 @@ const Hero = (props) => (
         nicho del moral <br />
       </SectionTitle>
       <SectionText>
-        The purpose of this portfolio is to showcase nicho's experience and 
-        inform future collaborators and employers of nicho's skills
+        full stack software dev x machine learning engineer
       </SectionText>
       <Button onClick={() => window.location="google.com"}>Learn More</Button>
     </LeftSection>
