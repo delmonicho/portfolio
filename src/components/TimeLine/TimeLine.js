@@ -46,7 +46,9 @@ const Timeline = () => {
     <Section id="about">
       <SectionTitle>About Me</SectionTitle>
       <SectionText>
-        Why I started coding.
+        Born in Los Angeles, raised in Green Bay, Wisconsin and graduated university in Hawaii.  
+        I'm a world traveler, musician and enthusiast of well designed experiences. Based in Brooklyn NY now, I'm focused on 
+        elevating my design knowledge and building robust, seamless and beautiful user interfaces and user experiences on the web.
       </SectionText>
     
     </Section>

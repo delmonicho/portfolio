@@ -11,9 +11,9 @@ const Hero = (props) => (
         nicho del moral <br />
       </SectionTitle>
       <SectionText>
-        full stack software dev x machine learning engineer
+        full stack software dev x machine learning hobbyist
       </SectionText>
-      <Button onClick={() => window.location="google.com"}>Learn More</Button>
+      <Button onClick={() => window.location="https://www.linkedin.com/in/nicho-del-moral/"}>Learn More</Button>
     </LeftSection>
   </Section>
 );
