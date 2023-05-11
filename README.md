@@ -1,3 +1,3 @@
 ## Personal Portfolio
 
-![Portfolio Website](https://user-images.githubusercontent.com/26866180/220581398-3d3f2c0c-1c36-4b9d-aaf3-8839042c3fa0.png)
+![image](https://github.com/delmonicho/portfolio/assets/26866180/300b7493-8a3c-4ef9-9b12-ce71833f1f2d)
