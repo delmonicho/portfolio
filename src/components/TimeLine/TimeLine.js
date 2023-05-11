@@ -43,7 +43,7 @@ const Timeline = () => {
   // }, []);
 
   return (
-    <Section id="about">
+    <Section id="about" nopadding>
       <SectionTitle>About Me</SectionTitle>
       <SectionText>
         Born in Los Angeles, raised in Green Bay, Wisconsin and graduated university in Hawaii.  

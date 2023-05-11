@@ -28,7 +28,7 @@ export const projects = [
   },
   {
     title: 'TimeShift',
-    description: "Built calendar with user and event tracking for Machine Learning research. ",
+    description: "Built full-stack calendar app with user and event tracking for Machine Learning research. ",
     image: '/images/TimeShift-Logo.png',
     tags: ['Vue', 'MongoDB', 'Express', 'Node.js'],
     source: 'https://google.com',
