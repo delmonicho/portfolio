@@ -2,8 +2,10 @@ export const projects = [
   {
     title: 'ML PyTorch Instance Segmentation',
     description: "Leveraged PyTorch to train a Mask R-CNN model on a custom image dataset.  Using Google OpenImages dataset and numpy, I loaded and prepared the images, labels, bounding box data and segmentation masks for machine learning",
-      image: '/images/instance-segmentation.png',
-      tags: ['PyTorch', 'Numpy', 'FiftyOne', 'Google OpenImages'],
+    image: '/images/instance-segmentation.png',
+    tags: ['PyTorch', 'Numpy', 'FiftyOne', 'Google OpenImages'],
+    source: 'https://google.com',
+    visit: 'https://google.com',
     id: 0,
   },
   {
