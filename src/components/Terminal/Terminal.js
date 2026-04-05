@@ -24,13 +24,7 @@ const Wrapper = styled.div`
 const ScrollArea = styled.div`
   flex: 1;
   overflow-y: auto;
-  padding: 1rem 1.5rem 0.5rem;
-`;
-
-const InputArea = styled.div`
-  padding: 0.25rem 1.5rem 1rem;
-  border-top: 1px solid ${props => props.theme.mutedText};
-  flex-shrink: 0;
+  padding: 1rem 1.5rem 1.5rem;
 `;
 
 const ContactPrompt = styled.div`
@@ -236,8 +230,6 @@ export default function Terminal() {
       <TerminalHeader />
       <ScrollArea ref={scrollRef}>
         <HistoryBlock history={history} />
-      </ScrollArea>
-      <InputArea>
         {contact && (
           <ContactPrompt>
             {`[contact] step: ${contact.step} — press Escape to cancel`}
@@ -249,7 +241,7 @@ export default function Terminal() {
           onChange={e => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
         />
-      </InputArea>
+      </ScrollArea>
     </Wrapper>
   );
 }
