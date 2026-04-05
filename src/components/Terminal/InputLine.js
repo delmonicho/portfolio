@@ -1,5 +1,5 @@
-import { useRef, useEffect } from 'react';
-import styled, { keyframes } from 'styled-components';
+import { useRef, useEffect, useState } from 'react';
+import styled, { keyframes, css } from 'styled-components';
 
 const blink = keyframes`
   0%, 100% { opacity: 1; }
@@ -30,7 +30,7 @@ const Cursor = styled.span`
   height: 1.1em;
   background: ${props => props.theme.text};
   vertical-align: text-bottom;
-  animation: ${blink} 1s step-end infinite;
+  animation: ${({ $focused }) => $focused ? css`${blink} 1s step-end infinite` : 'none'};
   margin-left: 1px;
 `;
 
@@ -44,29 +44,27 @@ const HiddenInput = styled.input`
   caret-color: transparent;
 `;
 
-export default function InputLine({ value, onChange, onKeyDown, prompt }) {
-  const inputRef = useRef(null);
+export default function InputLine({ value, onChange, onKeyDown, prompt, inputRef }) {
+  const [focused, setFocused] = useState(false);
 
-  // Always keep input focused
+  // Focus on mount
   useEffect(() => {
     if (inputRef.current) inputRef.current.focus();
-  });
-
-  const handleClick = () => {
-    if (inputRef.current) inputRef.current.focus();
-  };
+  }, [inputRef]);
 
   return (
-    <Row onClick={handleClick}>
+    <Row>
       <Prompt>{prompt || 'nicho@portfolio:~$ '}</Prompt>
       <Typed>{value}</Typed>
-      <Cursor />
+      <Cursor $focused={focused} />
       <HiddenInput
         ref={inputRef}
         type="text"
         value={value}
         onChange={onChange}
         onKeyDown={onKeyDown}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
         autoComplete="off"
         autoCorrect="off"
         autoCapitalize="off"

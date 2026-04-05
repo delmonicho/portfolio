@@ -76,6 +76,7 @@ export default function Terminal() {
   const [contact, setContact] = useState(null);
 
   const scrollRef = useRef(null);
+  const inputRef = useRef(null);
 
   // Auto-scroll to bottom whenever history changes
   useEffect(() => {
@@ -226,7 +227,7 @@ export default function Terminal() {
     : 'nicho@portfolio:~$ ';
 
   return (
-    <Wrapper onClick={() => {}}>
+    <Wrapper onClick={() => inputRef.current?.focus()}>
       <TerminalHeader />
       <ScrollArea ref={scrollRef}>
         <HistoryBlock history={history} />
@@ -240,6 +241,7 @@ export default function Terminal() {
           prompt={currentPrompt}
           onChange={e => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
+          inputRef={inputRef}
         />
       </ScrollArea>
     </Wrapper>
