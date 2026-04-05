@@ -1,37 +1,43 @@
 import { createGlobalStyle } from 'styled-components';
-import { normalize } from 'styled-normalize';
 
 const GlobalStyles = createGlobalStyle`
-  ${normalize};
-
-  * {
+  *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
   }
-  html {
-    font-size: 62.5%;
-    scroll-behavior: smooth;
 
+  html, body, #__next {
+    height: 100%;
+    width: 100%;
+    background: #0d0d0d;
+    color: #00ff41;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    overflow: hidden;
   }
-  body {
-    font-family: ${props => props.theme.fonts.main};
-    font-size: 1.6rem;
-    background: ${props => props.theme.colors.background1};
-    color: ${props => props.theme.colors.primary1};
-    cursor: default;
 
-  }
-  h1,h2,h3,h4,h5,h6,button {
-    font-family: ${props => props.theme.fonts.title};
-  }
   a {
+    color: inherit;
     text-decoration: none;
   }
-  li{
-    list-style: none;
+
+  ::selection {
+    background: #00ff41;
+    color: #0d0d0d;
   }
 
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0d0d0d;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #00ff41;
+    border-radius: 3px;
+  }
 `;
 
 export default GlobalStyles;
