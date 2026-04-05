@@ -1,46 +1,60 @@
+export const about = {
+  name: 'Nicho Del Moral',
+  role: 'Full Stack Software Dev × ML Hobbyist',
+  location: 'Brooklyn, NY',
+  origin: 'Born in Los Angeles · Raised in Green Bay, WI · Graduated in Hawaii',
+  interests: 'World traveler, musician, enthusiast of well-designed experiences',
+  tagline: 'Learning and growing one project at a time',
+  email: 'nicho.delmo@gmail.com',
+  github: 'github.com/delmonicho',
+  linkedin: 'linkedin.com/in/nicho-del-moral/',
+  instagram: 'instagram.com/delmonicho',
+};
+
+export const workHistory = [
+  { year: '2017', title: 'Started the journey',       desc: 'Dove into software development, fell in love with building things' },
+  { year: '2018', title: 'Freelance Developer',        desc: 'Took on client projects, built web apps across various stacks' },
+  { year: '2019', title: 'Founded JavaScript Mastery', desc: 'Created educational content and community around JS development' },
+  { year: '2020', title: 'Shared work with the world', desc: 'Open-sourced projects and grew a developer community' },
+  { year: '2021', title: 'Launched own platform',      desc: 'Built and deployed a full personal platform from the ground up' },
+];
+
 export const projects = [
   {
-    title: 'ML PyTorch Instance Segmentation',
-    description: "Leveraged PyTorch to train a Mask R-CNN model on a custom image dataset.  Using Google OpenImages dataset and numpy, I loaded and prepared the images, labels, bounding box data and segmentation masks for machine learning",
-    image: '/images/instance-segmentation.png',
-    tags: ['PyTorch', 'Numpy', 'FiftyOne', 'Google OpenImages'],
-    source: 'https://google.com',
-    visit: 'https://google.com',
     id: 0,
+    title: 'ML PyTorch Instance Segmentation',
+    description: 'Trained a Mask R-CNN model on a custom image dataset using Google OpenImages. Used NumPy to prepare images, labels, bounding boxes, and segmentation masks for ML training.',
+    stack: ['PyTorch', 'NumPy', 'FiftyOne', 'Google OpenImages'],
+    link: 'https://github.com/delmonicho',
   },
   {
-    title: 'WSI Inline Monogram Experience',
-    description:"Developed an personalized monogram experience to dozens of products across Williams Sonoma brand sites, including West Elm and Pottery Barn.",
-    image: '/images/wsi-monogram-experience.png',
-    tags: ['Vue', 'JavaScript'],
-    source: 'https://www.potterybarnkids.com/products/mackenzie-recycled-navy-seersucker-backpacks/?pkey=s~monogram%20backpack~203',
-    visit: 'https://www.potterybarnkids.com/products/mackenzie-recycled-navy-seersucker-backpacks/?pkey=s~monogram%20backpack~203',
     id: 1,
+    title: 'WSI Inline Monogram Experience',
+    description: 'Developed a personalized monogram experience across dozens of products on Williams Sonoma brand sites — West Elm and Pottery Barn.',
+    stack: ['Vue.js', 'JavaScript'],
+    link: 'https://www.potterybarnkids.com',
   },
   {
-    title: 'Advicent Essentials',
-    description: "Developed software solutions using Sprint cycle methods for a beta stage product for the leading financial planning software tool. ",
-      image: '/images/naviplan-logo.png',
-      tags: ['Angular 10', 'Node.js'],
-    source: 'https://www.advicentsolutions.com/en-us',
-    visit: 'https://www.advicentsolutions.com/en-us',
     id: 2,
+    title: 'Advicent Essentials',
+    description: 'Built software solutions in sprint cycles for a beta-stage financial planning product at the leading fintech software company.',
+    stack: ['Angular 10', 'Node.js'],
+    link: 'https://www.advicentsolutions.com',
   },
   {
-    title: 'TimeShift',
-    description: "Built full-stack calendar app with user and event tracking for Machine Learning research. ",
-    image: '/images/TimeShift-Logo.png',
-    tags: ['Vue', 'MongoDB', 'Express', 'Node.js'],
-    source: 'https://google.com',
-    visit: 'https://google.com',
     id: 3,
+    title: 'TimeShift',
+    description: 'Full-stack calendar app with user and event tracking, built to support Machine Learning research workflows.',
+    stack: ['Vue.js', 'MongoDB', 'Express', 'Node.js'],
+    link: 'https://github.com/delmonicho',
   },
 ];
 
-export const TimeLineData = [
-  { year: 2017, text: 'Started my journey', },
-  { year: 2018, text: 'Worked as a freelance developer', },
-  { year: 2019, text: 'Founded JavaScript Mastery', },
-  { year: 2020, text: 'Shared my projects with the world', },
-  { year: 2021, text: 'Started my own platform', },
-];
+export const skills = {
+  frontend:    ['React.js', 'Angular', 'Vue.js'],
+  backend:     ['Node.js', 'MongoDB', 'MySQL'],
+  datascience: ['PyTorch', 'Keras', 'FiftyOne', 'RStudio'],
+};
+
+// Legacy export kept for safety
+export const TimeLineData = workHistory.map(w => ({ year: parseInt(w.year), text: w.title }));
