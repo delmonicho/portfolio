@@ -21,8 +21,10 @@ const SKY_DOTS = [
   [45,37],[108,30],[172,44],[237,27],[305,41],[374,34],[443,46],
   [514,31],[585,39],[650,35],[712,42],[764,29],
 ];
-// Larger 4-pointed stars in sky (SVG text — y-pos matters only to itself, no alignment risk)
-const SKY_BIG = [[155,14],[427,9],[665,20]];
+// Larger 4-pointed stars in sky — [x, y, fontSize], sprinkled sparingly
+const SKY_BIG = [
+  [90,18,17],[340,9,14],[580,24,19],[725,13,15],[210,40,13],[490,35,16],
+];
 
 // Dots between back range and middle range
 const VAL1 = [[48,88],[148,84],[258,90],[368,85],[478,89],[588,83],[698,88]];
@@ -40,9 +42,8 @@ const FG_DOTS = [
   [700,178],[726,194],[712,210],[748,220],
 ];
 
-// Middle range: 7 main peaks every 114px, sub-peaks between them
-const MID_MAIN = [57, 171, 285, 400, 514, 628, 743];
-const MID_SUB  = [114, 228, 342, 457, 571, 685];
+// Middle range: 5 peaks every 160px
+const MID_MAIN = [80, 240, 400, 560, 720];
 
 // Foreground mountain data as [leftBase, apex, rightBase]
 const FG_MAIN = [
@@ -82,13 +83,10 @@ export default function AsciiAvatar() {
       {SKY_DOTS.map(([x, y], i) => (
         <circle key={`sd${i}`} cx={x} cy={y} r="1.5" fill={C.bright} />
       ))}
-      {SKY_BIG.map(([x, y], i) => (
-        <text key={`sb${i}`} x={x} y={y} fontSize="11"
+      {SKY_BIG.map(([x, y, size], i) => (
+        <text key={`sb${i}`} x={x} y={y} fontSize={size}
           fill={C.bright} fontFamily="JetBrains Mono, monospace" textAnchor="middle">✦</text>
       ))}
-
-      {/* ── Back mountain range (dense zigzag) ── */}
-      <polyline points={zz(0, W, 58, 80, 10)} fill="none" stroke={C.dim} strokeWidth="1.2" />
 
       {/* ── Valley 1 dots ── */}
       {VAL1.map(([x, y], i) => (
@@ -96,19 +94,10 @@ export default function AsciiAvatar() {
       ))}
 
       {/* ── Middle mountain range ── */}
-      {/* dense zigzag base */}
-      <polyline points={zz(3, W-3, 132, 150, 8)} fill="none" stroke={C.mid} strokeWidth="1.2" />
-      {/* main peaks: overlapping V-shapes sharing the y=150 baseline */}
       {MID_MAIN.map((px, i) => (
         <polyline key={`mm${i}`}
-          points={`${Math.max(0,px-114)},150 ${px},100 ${Math.min(W,px+114)},150`}
+          points={`${Math.max(0,px-80)},150 ${px},100 ${Math.min(W,px+80)},150`}
           fill="none" stroke={C.mid} strokeWidth="1.2" />
-      ))}
-      {/* sub-peaks sitting on baseline between main peaks */}
-      {MID_SUB.map((px, i) => (
-        <polyline key={`ms${i}`}
-          points={`${px-18},150 ${px},126 ${px+18},150`}
-          fill="none" stroke={C.mid} strokeWidth="1" />
       ))}
 
       {/* ── Valley 2 dots ── */}
