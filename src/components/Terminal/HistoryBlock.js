@@ -20,6 +20,8 @@ export default function HistoryBlock({ history }) {
             output={entry.output}
             isError={entry.isError}
             isSuccess={entry.isSuccess}
+            isNL={entry.isNL}
+            prompt={entry.prompt}
           />
         );
       })}

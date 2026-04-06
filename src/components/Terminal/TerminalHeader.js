@@ -15,10 +15,11 @@ const Title = styled.span`
   font-size: 0.85em;
 `;
 
-export default function TerminalHeader() {
+export default function TerminalHeader({ currentDir }) {
+  const path = !currentDir || currentDir === '/' ? '~' : `~${currentDir}`;
   return (
     <Bar>
-      <Title>nicho@portfolio: ~</Title>
+      <Title>nicho@portfolio: {path}</Title>
     </Bar>
   );
 }

@@ -54,7 +54,7 @@ export default function InputLine({ value, onChange, onKeyDown, prompt, inputRef
 
   return (
     <Row>
-      <Prompt>{prompt || 'nicho@portfolio:~$ '}</Prompt>
+      <Prompt>{prompt || '$ '}</Prompt>
       <Typed>{value}</Typed>
       <Cursor $focused={focused} />
       <HiddenInput

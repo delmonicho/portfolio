@@ -3,6 +3,11 @@ export default function help() {
 ┌─────────────────────────────────────────────┐
 │             AVAILABLE COMMANDS              │
 ├─────────────────────────────────────────────┤
+│  ls          →  list directory contents     │
+│  cd /about   →  navigate to a section       │
+│  cat FILE.md →  read file in current dir    │
+│  cd ..       →  go back to root             │
+├─────────────────────────────────────────────┤
 │  /about      →  who is nicho?               │
 │  /work       →  work experience             │
 │  /projects   →  portfolio projects          │

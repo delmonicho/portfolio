@@ -5,7 +5,6 @@ import TerminalHeader from './TerminalHeader';
 import HistoryBlock from './HistoryBlock';
 import InputLine from './InputLine';
 import { runCommand } from '../../commands/index';
-import help from '../../commands/help';
 
 // ─── Styled Components ────────────────────────────────────────────────────────
 
@@ -36,7 +35,6 @@ const ContactPrompt = styled.div`
 // ─── Welcome Output ───────────────────────────────────────────────────────────
 
 const WELCOME_TEXT = `Welcome to nicho's portfolio terminal.
-Type 'help' to see available commands.
 ──────────────────────────────────────`;
 
 // ─── Reducer ─────────────────────────────────────────────────────────────────
@@ -69,8 +67,9 @@ export default function Terminal() {
   ]);
 
   const [input, setInput] = useState('');
-  const [cmdHistory, setCmdHistory] = useState([]);   // for up/down arrow
+  const [cmdHistory, setCmdHistory] = useState([]);
   const [historyIdx, setHistoryIdx] = useState(-1);
+  const [currentDir, setCurrentDir] = useState('/');
 
   // Contact form state machine: null | { step, data }
   const [contact, setContact] = useState(null);
@@ -85,6 +84,11 @@ export default function Terminal() {
     }
   }, [history, contact]);
 
+  // Build the shell prompt string for a given directory
+  const buildPrompt = useCallback((dir) => {
+    return `~${dir === '/' ? '' : dir} $ `;
+  }, []);
+
   // Push a plain output entry
   const pushOutput = useCallback((command, output, flags = {}) => {
     dispatch({
@@ -93,40 +97,91 @@ export default function Terminal() {
     });
   }, []);
 
+  // ── Execute a (possibly &&-chained) command string ───────────────────────────
+  const executeChain = useCallback((rawFull, dir, echoCommand = true) => {
+    const segments = rawFull.split('&&').map(s => s.trim()).filter(Boolean);
+    let localDir = dir;
+    let isFirst = true;
+
+    for (const segment of segments) {
+      const result = runCommand(segment, localDir);
+
+      if (result.url) {
+        window.open(result.url, '_blank', 'noopener,noreferrer');
+        pushOutput(
+          echoCommand && isFirst ? rawFull : null,
+          result.output,
+          { prompt: buildPrompt(localDir) }
+        );
+        isFirst = false;
+        continue;
+      }
+
+      if (result.isNL) {
+        // Echo the original input + the inferred command in yellow italic
+        pushOutput(
+          echoCommand && isFirst ? rawFull : null,
+          `→ ${result.resolvedCommand}`,
+          { isNL: true, prompt: buildPrompt(localDir) }
+        );
+        // Run the resolved command chain without echoing (already shown above)
+        executeChain(result.resolvedCommand, localDir, false);
+        return;
+      }
+
+      if (result.isClear) {
+        dispatch({ type: 'CLEAR' });
+        setCurrentDir('/');
+        return;
+      }
+
+      if (result.isContact) {
+        pushOutput(
+          echoCommand && isFirst ? rawFull : null,
+          'Starting contact form — press Escape at any time to cancel.',
+          { prompt: buildPrompt(localDir) }
+        );
+        setContact({ step: 'name', data: {} });
+        return;
+      }
+
+      // Only push an entry if there's a command echo or output to show
+      if ((echoCommand && isFirst) || result.output !== null) {
+        pushOutput(
+          echoCommand && isFirst ? rawFull : null,
+          result.output,
+          { isError: result.isError, prompt: buildPrompt(localDir) }
+        );
+      }
+
+      if (result.cdTo !== null) {
+        localDir = result.cdTo;
+      }
+      isFirst = false;
+    }
+
+    setCurrentDir(localDir);
+  }, [dispatch, pushOutput, buildPrompt, setCurrentDir, setContact]);
+
   // ── Handle normal command submission ────────────────────────────────────────
   const handleCommand = useCallback((raw) => {
     if (!raw.trim()) return;
-
-    // Save to command history
     setCmdHistory(prev => [raw, ...prev]);
     setHistoryIdx(-1);
-
-    const { output, isClear, isContact } = runCommand(raw);
-
-    if (isClear) {
-      dispatch({ type: 'CLEAR' });
-      return;
-    }
-
-    if (isContact) {
-      pushOutput(raw, 'Starting contact form — press Escape at any time to cancel.');
-      setContact({ step: 'name', data: {} });
-      return;
-    }
-
-    pushOutput(raw, output);
-  }, [pushOutput]);
+    executeChain(raw, currentDir);
+  }, [executeChain, currentDir]);
 
   // ── Handle contact form step submission ─────────────────────────────────────
   const handleContactStep = useCallback(async (value) => {
     const { step, data } = contact;
+    const prompt = buildPrompt(currentDir);
 
     if (step === 'name') {
       if (!value.trim()) {
         pushOutput(null, 'Name cannot be empty. Try again.');
         return;
       }
-      pushOutput(CONTACT_PROMPTS.name + value, null);
+      pushOutput(CONTACT_PROMPTS.name + value, null, { prompt });
       setContact({ step: 'email', data: { ...data, name: value.trim() } });
 
     } else if (step === 'email') {
@@ -135,7 +190,7 @@ export default function Terminal() {
         pushOutput(null, 'Invalid email address. Try again.');
         return;
       }
-      pushOutput(CONTACT_PROMPTS.email + value, null);
+      pushOutput(CONTACT_PROMPTS.email + value, null, { prompt });
       setContact({ step: 'message', data: { ...data, email: value.trim() } });
 
     } else if (step === 'message') {
@@ -143,10 +198,9 @@ export default function Terminal() {
         pushOutput(null, 'Message cannot be empty. Try again.');
         return;
       }
-      pushOutput(CONTACT_PROMPTS.message + value, null);
+      pushOutput(CONTACT_PROMPTS.message + value, null, { prompt });
       const newData = { ...data, message: value.trim() };
       setContact({ step: 'confirm', data: newData });
-      // Show summary
       pushOutput(null,
 `┌─────────────────────────────────────┐
 │           MESSAGE SUMMARY           │
@@ -160,7 +214,7 @@ export default function Terminal() {
 
     } else if (step === 'confirm') {
       const ans = value.trim().toLowerCase();
-      pushOutput(CONTACT_PROMPTS.confirm + value, null);
+      pushOutput(CONTACT_PROMPTS.confirm + value, null, { prompt });
 
       if (ans === 'y' || ans === 'yes') {
         try {
@@ -185,7 +239,7 @@ export default function Terminal() {
         pushOutput(null, 'Please enter y or n.');
       }
     }
-  }, [contact, pushOutput]);
+  }, [contact, currentDir, pushOutput, buildPrompt]);
 
   // ── Keyboard handler ─────────────────────────────────────────────────────────
   const handleKeyDown = useCallback((e) => {
@@ -224,11 +278,11 @@ export default function Terminal() {
   // ── Derive current prompt text ───────────────────────────────────────────────
   const currentPrompt = contact
     ? CONTACT_PROMPTS[contact.step]
-    : 'nicho@portfolio:~$ ';
+    : buildPrompt(currentDir);
 
   return (
     <Wrapper onClick={() => inputRef.current?.focus()}>
-      <TerminalHeader />
+      <TerminalHeader currentDir={currentDir} />
       <ScrollArea ref={scrollRef}>
         <HistoryBlock history={history} />
         {contact && (

@@ -1,27 +1,39 @@
 import { about } from '../constants/constants';
 
 export default function aboutCmd() {
-  return `
-┌─────────────────────────────────────────────────────┐
-│                    ABOUT NICHO                      │
-├─────────────────────────────────────────────────────┤
-│                                                     │
-│  Name    :  ${about.name.padEnd(38)}│
-│  Role    :  Full Stack Dev × ML Hobbyist            │
-│  Home    :  ${about.location.padEnd(38)}│
-│                                                     │
-├─────────────────────────────────────────────────────┤
-│  Origin  :  Born in Los Angeles                     │
-│             Raised in Green Bay, WI                 │
-│             Graduated in Hawaii                     │
-├─────────────────────────────────────────────────────┤
-│  Interests:  World traveler, musician,              │
-│              enthusiast of well-designed            │
-│              experiences                            │
-├─────────────────────────────────────────────────────┤
-│  Email   :  ${about.email.padEnd(38)}│
-│  GitHub  :  ${about.github.padEnd(38)}│
-│  LinkedIn:  ${about.linkedin.padEnd(38)}│
-└─────────────────────────────────────────────────────┘
-  "${about.tagline}"`.trim();
+  const W = 53;
+  const T = '─'.repeat(W);
+  const top    = `┌${T}┐`;
+  const sep    = `├${T}┤`;
+  const bottom = `└${T}┘`;
+  const blank  = `│${' '.repeat(W)}│`;
+
+  const c = (s) => {
+    const pad = W - s.length;
+    const l = Math.floor(pad / 2);
+    return `│${' '.repeat(l)}${s}${' '.repeat(pad - l)}│`;
+  };
+  const ln = (s) => `│${s.padEnd(W)}│`;
+
+  return [
+    top,
+    c("hey, i'm nicho."),
+    sep,
+    blank,
+    ln(`  full-stack + AI-native engineer based in`),
+    ln(`  Brooklyn, NY. born in LA, grew up in Green`),
+    ln(`  Bay WI, graduated in Hawaii.`),
+    blank,
+    sep,
+    ln(`  i build things that focus on adding value to`),
+    ln(`  people's flows. lately deep into agentic`),
+    ln(`  interfaces, MCP tooling, CLIs + Claude skills.`),
+    sep,
+    ln(`  reach me:`),
+    ln(`    ${about.email}`),
+    ln(`    ${about.github}`),
+    ln(`    ${about.linkedin}`),
+    bottom,
+    `  "${about.tagline}"`,
+  ].join('\n');
 }

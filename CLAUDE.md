@@ -19,15 +19,26 @@ npm run build    # production build
 
 ```
 User types → InputLine → Terminal.handleKeyDown (Enter)
-  → handleCommand(raw) → runCommand(raw) from commands/index.js
-    → normalize input (trim, strip leading /, lowercase)
-    → route to handler → returns string output
+  → handleCommand(raw) → executeChain(raw, currentDir)
+    → splits on && → runs segments sequentially
+    → runCommand(segment, currentDir) from commands/index.js
+      1. detectIntent() — natural language → resolved shell command
+      2. contact special case
+      3. filesystem commands: ls, cd, cat
+      4. named commands: about, work, projects, skills, help, whoami, clear
+    → result: { output, isClear, isContact, cdTo, isNL?, resolvedCommand? }
   → pushOutput() → history array → HistoryBlock re-renders
+  → setCurrentDir() updates prompt and header
 ```
 
 **Special commands:**
-- `clear` — dispatches `CLEAR` to the history reducer, resetting to welcome state
+- `clear` — dispatches `CLEAR` to the history reducer + resets `currentDir` to `/`
 - `contact` — activates the contact form state machine (see below)
+- `cd /path` — updates `currentDir` state; prompt and header reflect new path
+- `ls` — lists directory contents from virtual FS
+- `cat FILE.md` — renders the content for the current directory's file
+- `&&` chains — e.g. `cd /about && cat ABOUT.md` — segments run sequentially with threaded dir state
+- Natural language — e.g. "tell me about nicho" → echoes resolved command in yellow, then runs it
 
 ### Contact form state machine
 
@@ -55,18 +66,20 @@ null → { step: 'name' } → { step: 'email' } → { step: 'message' } → { st
 ```
 src/
 ├── commands/
-│   ├── index.js          # runCommand(raw) — router + normalizer
-│   ├── help.js           # ASCII box: all commands
+│   ├── index.js          # runCommand(raw, currentDir) — router + normalizer
+│   ├── fs.js             # Virtual filesystem: handleLs, handleCd, handleCat
+│   ├── nlp.js            # Natural language intent detection: detectIntent(raw)
+│   ├── help.js           # ASCII box: all commands (includes ls/cd/cat)
 │   ├── whoami.js         # One-liner bio
-│   ├── about.js          # Full bio from constants
+│   ├── about.js          # Conversational bio (uses helper fns for consistent box width)
 │   ├── work.js           # Work history table
 │   ├── projects.js       # Project cards
 │   ├── skills.js         # 3-column skills table
 │   └── clear.js          # Returns CLEAR_SENTINEL
 │
 ├── components/Terminal/
-│   ├── Terminal.js       # State, reducer, keyboard handling
-│   ├── TerminalHeader.js # macOS dots + "nicho@portfolio: ~"
+│   ├── Terminal.js       # State, reducer, keyboard handling, executeChain
+│   ├── TerminalHeader.js # "nicho@portfolio: ~" — accepts currentDir prop
 │   ├── InputLine.js      # Prompt + blinking cursor
 │   ├── OutputBlock.js    # Single history entry renderer
 │   ├── HistoryBlock.js   # Maps history[] → OutputBlock
@@ -127,7 +140,7 @@ All content lives in **`src/constants/constants.js`**. Edit here to update the p
 | `dimText` | `#00aa2b` | Secondary / dim elements |
 | `mutedText` | `#005f17` | Subtle separators |
 | `accent` | `#ffffff` | White accents |
-| `accentYellow` | `#ffff00` | Contact form prompts |
+| `accentYellow` | `#ffff00` | Contact form prompts, NL echo lines |
 | `error` | `#ff4444` | Error messages |
 | `font` | JetBrains Mono | All monospace text |
 
@@ -140,6 +153,8 @@ Access in styled-components via `${props => props.theme.text}`.
 - **No localStorage** — all state is ephemeral, resets on page refresh
 - History managed with `useReducer` in `Terminal.js`
 - Contact form state: `useState` → `{ step, data }` object or `null`
+- Current directory: `useState('/')` → `currentDir` — drives prompt text and header title
+- History entries carry a `prompt` string (snapshot of the prompt at time of command) and optional `isNL` flag (NL-inferred command echo styled in accentYellow italic)
 
 ---
 
