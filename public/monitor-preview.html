@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IBM Monitor Preview — nicho del moral</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 100%; height: 100vh;
+    overflow: hidden;
+    background: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ── MONITOR SHELL (fills viewport with margin) ──────────── */
+  .monitor {
+    position: relative;
+    width: calc(100vw - 2.5rem);
+    height: calc(100vh - 2.5rem);
+    display: flex;
+    flex-direction: column;
+
+    /* cream/putty IBM plastic */
+    background: linear-gradient(160deg, #d6cdb8 0%, #c2b99e 42%, #b4ab94 100%);
+    border-radius: 14px;
+
+    /* 3-D bevel: highlight top-left, shadow bottom-right */
+    box-shadow:
+      inset 0  3px  5px rgba(255,255,255,0.50),
+      inset 4px 0   8px rgba(255,255,255,0.18),
+      inset -4px 0  8px rgba(0,0,0,0.20),
+      inset 0 -3px  6px rgba(0,0,0,0.25),
+      0 0 0 1px #8a8272,
+      0 6px 24px rgba(0,0,0,0.8),
+      0 16px 48px rgba(0,0,0,0.5);
+
+    padding: 22px 26px 0 26px;
+  }
+
+  /* top vent slots */
+  .monitor::before {
+    content: '';
+    position: absolute;
+    top: 9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 5px;
+    background: repeating-linear-gradient(
+      90deg,
+      #9a9080 0 5px, transparent 5px 9px
+    );
+    border-radius: 2px;
+    opacity: 0.55;
+  }
+
+  /* ── INNER BEZEL (dark inset ring) ───────────────────────── */
+  .screen-bezel {
+    flex: 1;
+    background: #17140f;
+    border-radius: 8px 8px 4px 4px;
+    padding: 10px 12px;
+    box-shadow:
+      inset 0  4px 14px rgba(0,0,0,0.95),
+      inset 4px 0  10px rgba(0,0,0,0.70),
+      inset -4px 0 10px rgba(0,0,0,0.70),
+      inset 0 -2px  6px rgba(0,0,0,0.50),
+      0 0 0 1px #0c0a07;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── SCREEN ──────────────────────────────────────────────── */
+  .screen {
+    position: relative;
+    flex: 1;
+    background: #070c06;
+    border-radius: 4px;
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  /* scanlines */
+  .screen::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent      0px 2px,
+      rgba(0,0,0,0.16) 2px 4px
+    );
+    z-index: 4;
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  /* ── TERMINAL CONTENT ────────────────────────────────────── */
+  .terminal-content {
+    padding: 18px 22px;
+    color: #00ff41;
+    font-size: 13px;
+    line-height: 1.6;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    z-index: 2;
+    /* phosphor glow */
+    text-shadow: 0 0 8px rgba(0,255,65,0.85), 0 0 18px rgba(0,255,65,0.30);
+  }
+  .dim {
+    color: #00aa2b;
+    text-shadow: 0 0 5px rgba(0,170,43,0.55);
+  }
+  .prompt::before {
+    content: 'nicho@portfolio:~$ ';
+    color: #00ff41;
+  }
+
+  /* ── CHIN BAR ────────────────────────────────────────────── */
+  .chin {
+    height: 44px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8px;
+  }
+
+  .badge {
+    font-family: 'Arial Black', Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.20em;
+    color: #7a7060;
+    text-transform: uppercase;
+  }
+
+  .controls { display: flex; align-items: center; gap: 8px; }
+
+  .brightness-btn {
+    width: 14px; height: 14px;
+    border-radius: 3px;
+    background: linear-gradient(135deg, #c0b89a 0%, #9a9078 100%);
+    box-shadow:
+      inset 0  1px 2px rgba(255,255,255,0.35),
+      inset 0 -1px 2px rgba(0,0,0,0.30);
+  }
+  .led {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #22cc44;
+    box-shadow: 0 0 6px #22cc44, 0 0 14px rgba(34,204,68,0.45);
+    animation: led-pulse 3s ease-in-out infinite;
+  }
+  @keyframes led-pulse {
+    0%,100% { box-shadow: 0 0 6px #22cc44, 0 0 14px rgba(34,204,68,0.45); }
+    50%      { box-shadow: 0 0 3px #22cc44; }
+  }
+</style>
+</head>
+<body>
+  <div class="monitor">
+    <div class="screen-bezel">
+      <div class="screen">
+        <div class="terminal-content">
+<pre class="dim">         .-------.
+        /  o   o  \
+       |   .___,   |
+       |   \   /   |
+        \   ---   /
+    _____|_______|_____
+   /                   \
+  /   nicho del moral   \
+ /                       \
+'-------------------------'</pre>
+<br>
+<span>Welcome to nicho's portfolio terminal.</span><br>
+<span class="dim">Type 'help' to see available commands.</span><br>
+<span class="dim">──────────────────────────────────────</span><br>
+<br>
+<div class="prompt"></div>
+        </div>
+      </div>
+    </div>
+    <div class="chin">
+      <div class="badge">IBM</div>
+      <div class="controls">
+        <div class="brightness-btn"></div>
+        <div class="brightness-btn"></div>
+        <div class="led"></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
